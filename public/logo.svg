@@ -1,0 +1,7 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="200" height="200" rx="20" fill="#1a4977"/>
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="30" font-weight="bold">DAMMIT BOBBY</text>
+  <rect x="40" y="110" width="120" height="40" rx="5" fill="#2a71b8"/>
+  <text x="50%" y="135" dominant-baseline="middle" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="16" font-weight="bold">LLC</text>
+</svg>
