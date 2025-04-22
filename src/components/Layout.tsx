@@ -48,7 +48,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         w-64 bg-sidebar text-sidebar-foreground flex flex-col`}
       >
         <div className="p-4 flex items-center justify-center border-b border-sidebar-border">
-          <img src="/logo.svg" alt="Dammit Bobby LLC" className="h-12 w-auto" />
+          <img src="/logo.svg" alt="Dammit Bobby LLC" className="h-24 w-auto" />
         </div>
         
         <nav className="flex-1 pt-6">
