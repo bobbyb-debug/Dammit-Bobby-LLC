@@ -1,4 +1,3 @@
-
 import { Job, CabinRate, Invoice, CompanyInfo } from "@/types";
 import { addDays } from "date-fns";
 
@@ -290,4 +289,10 @@ export const calculateJobTotal = (
   if (!cabin) return 0;
   
   return cabin.baseRate + (cabin.bedRate * bedCount);
+};
+
+export const deleteJob = (jobId: string): void => {
+  const jobs = getJobs();
+  const updatedJobs = jobs.filter(job => job.id !== jobId);
+  saveJobs(updatedJobs);
 };

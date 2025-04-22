@@ -44,6 +44,22 @@ const JobList = ({
   
   const displayJobs = limit ? filteredJobs.slice(0, limit) : filteredJobs;
 
+  // TODO: Add editing logic later
+  // For now, just stub handlers
+  const handleEdit = (jobId: string) => {
+    alert(`Editing job ${jobId} (feature coming soon)`);
+  };
+
+  const handleDelete = (jobId: string) => {
+    if (window.confirm("Delete this job? This cannot be undone.")) {
+      // import deleteJob from data
+      import("@/lib/data").then(({ deleteJob }) => {
+        deleteJob(jobId);
+        window.location.reload();
+      });
+    }
+  };
+
   return (
     <Card>
       <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between">
@@ -79,6 +95,7 @@ const JobList = ({
                   <TableHead>Beds</TableHead>
                   <TableHead>Notes</TableHead>
                   <TableHead className="text-right">Total</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -94,6 +111,22 @@ const JobList = ({
                     <TableCell className="text-right font-medium">
                       ${job.total.toFixed(2)}
                     </TableCell>
+                    <TableCell className="text-right">
+                      <button
+                        className="text-blue-600 hover:underline mr-2"
+                        onClick={() => handleEdit(job.id)}
+                        title="Edit"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="text-red-600 hover:underline"
+                        onClick={() => handleDelete(job.id)}
+                        title="Delete"
+                      >
+                        Delete
+                      </button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -106,3 +139,4 @@ const JobList = ({
 };
 
 export default JobList;
+

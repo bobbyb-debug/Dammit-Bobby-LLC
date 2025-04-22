@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,8 @@ import {
   Mail
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 interface InvoiceDetailProps {
   invoice: Invoice;
@@ -49,6 +50,44 @@ const InvoiceDetail = ({ invoice, onInvoiceUpdated }: InvoiceDetailProps) => {
       window.print();
       setIsPrinting(false);
     }, 100);
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!printRef.current) return;
+    toast({ title: "Starting PDF download...", description: "Please wait while we generate your PDF invoice." });
+
+    // Use html2canvas to capture the HTML div as a canvas
+    const canvas = await html2canvas(printRef.current, {
+      scale: 2,
+      useCORS: true,
+    });
+    const imgData = canvas.toDataURL("image/png");
+
+    // Create a new jsPDF instance (A4, portrait)
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "pt",
+      format: "a4"
+    });
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    // Draw the image (scale to A4 width, keep ratio)
+    const imgProps = {
+      width: canvas.width,
+      height: canvas.height
+    };
+    const ratio = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
+    const imgWidth = imgProps.width * ratio;
+    const imgHeight = imgProps.height * ratio;
+    const x = (pdfWidth - imgWidth) / 2;
+    const y = 20; // Margin from top
+
+    pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
+
+    pdf.save(`Invoice-${invoice.number}.pdf`);
+    toast({ title: "PDF downloaded", description: `Invoice #${invoice.number} saved as PDF.` });
   };
 
   const handleEmail = () => {
@@ -108,7 +147,7 @@ const InvoiceDetail = ({ invoice, onInvoiceUpdated }: InvoiceDetailProps) => {
             <Button
               variant="default" 
               size="sm"
-              onClick={handlePrint}
+              onClick={handleDownloadPDF}
             >
               <Download size={16} className="mr-2" />
               Download PDF
