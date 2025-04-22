@@ -14,6 +14,7 @@ import NewInvoice from "@/pages/NewInvoice";
 import InvoiceDetail from "@/pages/InvoiceDetail";
 import Settings from "@/pages/Settings";
 import NotFound from "@/pages/NotFound";
+import Index from "@/pages/Index";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +26,8 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Layout><Dashboard /></Layout>} />
+            <Route path="/" element={<Layout><Index /></Layout>} />
+            <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
             <Route path="/jobs" element={<Layout><Jobs /></Layout>} />
             <Route path="/jobs/new" element={<Layout><NewJob /></Layout>} />
             <Route path="/invoices" element={<Layout><Invoices /></Layout>} />
