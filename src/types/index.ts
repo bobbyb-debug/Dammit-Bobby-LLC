@@ -40,3 +40,12 @@ export interface CompanyInfo {
   email: string;
   phone: string;
 }
+
+export interface Expense {
+  id: string;
+  date: Date;
+  amount: number;
+  category: string;
+  description: string;
+  receipt?: string;
+}

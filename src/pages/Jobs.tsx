@@ -56,6 +56,7 @@ const Jobs = () => {
             title="Upcoming Jobs"
             description="Jobs scheduled for today and future dates"
             showSearch={true}
+            onJobsChanged={refreshJobs}
           />
         </TabsContent>
         
@@ -65,6 +66,7 @@ const Jobs = () => {
             title="Past Jobs"
             description="Previously completed cleaning jobs"
             showSearch={true}
+            onJobsChanged={refreshJobs}
           />
         </TabsContent>
       </Tabs>

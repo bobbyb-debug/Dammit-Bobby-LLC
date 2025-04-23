@@ -15,6 +15,8 @@ import InvoiceDetail from "@/pages/InvoiceDetail";
 import Settings from "@/pages/Settings";
 import NotFound from "@/pages/NotFound";
 import Index from "@/pages/Index";
+import CalendarPage from "@/pages/Calendar";
+import Finance from "@/pages/Finance";
 
 const queryClient = new QueryClient();
 
@@ -30,9 +32,11 @@ const App = () => (
             <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
             <Route path="/jobs" element={<Layout><Jobs /></Layout>} />
             <Route path="/jobs/new" element={<Layout><NewJob /></Layout>} />
+            <Route path="/calendar" element={<Layout><CalendarPage /></Layout>} />
             <Route path="/invoices" element={<Layout><Invoices /></Layout>} />
             <Route path="/invoices/new" element={<Layout><NewInvoice /></Layout>} />
             <Route path="/invoices/:id" element={<Layout><InvoiceDetail /></Layout>} />
+            <Route path="/finance" element={<Layout><Finance /></Layout>} />
             <Route path="/settings" element={<Layout><Settings /></Layout>} />
             <Route path="*" element={<NotFound />} />
           </Routes>

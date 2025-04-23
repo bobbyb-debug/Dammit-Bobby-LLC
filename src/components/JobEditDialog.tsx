@@ -1,11 +1,11 @@
 
-import { useState, FormEvent } from "react";
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -13,17 +13,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getCabinRates, calculateJobTotal, addJob } from "@/lib/data";
+import { Job } from "@/types";
+import { getCabinRates, calculateJobTotal, updateJob } from "@/lib/data";
 import { useToast } from "@/hooks/use-toast";
 
-const JobForm = ({ onJobAdded }: { onJobAdded?: () => void }) => {
+interface JobEditDialogProps {
+  job: Job | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onJobUpdated: () => void;
+}
+
+const JobEditDialog = ({ job, open, onOpenChange, onJobUpdated }: JobEditDialogProps) => {
   const { toast } = useToast();
   const cabinRates = getCabinRates();
-  const [date, setDate] = useState<string>(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
+  const [date, setDate] = useState<string>("");
   const [cabin, setCabin] = useState<string>("");
   const [bedCount, setBedCount] = useState<string>("0");
   const [notes, setNotes] = useState<string>("");
   const [total, setTotal] = useState<number>(0);
+
+  useEffect(() => {
+    if (job) {
+      setDate(format(job.date, "yyyy-MM-dd'T'HH:mm"));
+      setCabin(job.cabin);
+      setBedCount(job.bedCount.toString());
+      setNotes(job.notes);
+      setTotal(job.total);
+    }
+  }, [job]);
 
   const handleCabinChange = (cabinName: string) => {
     setCabin(cabinName);
@@ -41,8 +59,8 @@ const JobForm = ({ onJobAdded }: { onJobAdded?: () => void }) => {
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
+    if (!job) return;
     
     if (!date || !cabin || parseFloat(bedCount) < 0) {
       toast({
@@ -53,7 +71,8 @@ const JobForm = ({ onJobAdded }: { onJobAdded?: () => void }) => {
       return;
     }
     
-    const newJob = addJob({
+    const updatedJob = updateJob({
+      ...job,
       date: new Date(date),
       cabin,
       bedCount: parseFloat(bedCount),
@@ -62,40 +81,21 @@ const JobForm = ({ onJobAdded }: { onJobAdded?: () => void }) => {
     });
     
     toast({
-      title: "Job added",
-      description: `Job for ${cabin} has been added successfully.`
+      title: "Job updated",
+      description: `Job for ${cabin} has been updated successfully.`
     });
     
-    // Reset form
-    setDate(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
-    setCabin("");
-    setBedCount("0");
-    setNotes("");
-    setTotal(0);
-    
-    if (onJobAdded) {
-      onJobAdded();
-    }
-  };
-
-  // Determine the label based on the selected cabin type
-  const getCountLabel = () => {
-    if (cabin === "Hourly Work") {
-      return "Hours Worked";
-    } else if (cabin && cabin.includes("Cabin")) {
-      return "Number of Beds";
-    } else {
-      return "Quantity";
-    }
+    onOpenChange(false);
+    onJobUpdated();
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Log New Job</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>Edit Job</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="date">Date and Time</Label>
@@ -129,7 +129,7 @@ const JobForm = ({ onJobAdded }: { onJobAdded?: () => void }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="bedCount">{getCountLabel()}</Label>
+              <Label htmlFor="bedCount">Number of Beds/Hours</Label>
               <Input
                 id="bedCount"
                 type="number"
@@ -166,14 +166,18 @@ const JobForm = ({ onJobAdded }: { onJobAdded?: () => void }) => {
               rows={3}
             />
           </div>
-
-          <Button type="submit" className="w-full">
-            Save Job
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
           </Button>
-        </form>
-      </CardContent>
-    </Card>
+          <Button onClick={handleSubmit}>
+            Save Changes
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-export default JobForm;
+export default JobEditDialog;
