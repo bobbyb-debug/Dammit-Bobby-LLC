@@ -28,16 +28,18 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Layout><Index /></Layout>} />
-            <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
-            <Route path="/jobs" element={<Layout><Jobs /></Layout>} />
-            <Route path="/jobs/new" element={<Layout><NewJob /></Layout>} />
-            <Route path="/calendar" element={<Layout><CalendarPage /></Layout>} />
-            <Route path="/invoices" element={<Layout><Invoices /></Layout>} />
-            <Route path="/invoices/new" element={<Layout><NewInvoice /></Layout>} />
-            <Route path="/invoices/:id" element={<Layout><InvoiceDetail /></Layout>} />
-            <Route path="/finance" element={<Layout><Finance /></Layout>} />
-            <Route path="/settings" element={<Layout><Settings /></Layout>} />
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Index />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/jobs" element={<Jobs />} />
+              <Route path="/jobs/new" element={<NewJob />} />
+              <Route path="/calendar" element={<CalendarPage />} />
+              <Route path="/invoices" element={<Invoices />} />
+              <Route path="/invoices/new" element={<NewInvoice />} />
+              <Route path="/invoices/:id" element={<InvoiceDetail />} />
+              <Route path="/finance" element={<Finance />} />
+              <Route path="/settings" element={<Settings />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
