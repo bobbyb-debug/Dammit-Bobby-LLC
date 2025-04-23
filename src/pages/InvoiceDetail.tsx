@@ -39,10 +39,8 @@ const InvoiceDetail = () => {
         </Button>
       </div>
       
-      <InvoiceDetailComponent 
-        invoice={invoice} 
-        onInvoiceUpdated={handleInvoiceUpdated}
-      />
+      {/* Fixed: Component is self-contained and doesn't need props */}
+      <InvoiceDetailComponent />
     </div>
   );
 };

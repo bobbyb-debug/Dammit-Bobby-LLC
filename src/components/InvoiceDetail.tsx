@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
@@ -84,7 +85,7 @@ const InvoiceDetail = () => {
                   <Badge
                     variant={
                       invoice.status === "paid"
-                        ? "success"
+                        ? "outline"  // Changed from "success" to "outline"
                         : invoice.status === "overdue"
                         ? "destructive"
                         : "secondary"
