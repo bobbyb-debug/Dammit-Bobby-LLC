@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { format } from "date-fns";
 import {
@@ -36,29 +35,12 @@ const JobList = ({
   showSearch = false,
 }: JobListProps) => {
   const [searchTerm, setSearchTerm] = useState("");
-  
-  const filteredJobs = jobs.filter(job => 
-    job.cabin.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    job.notes.toLowerCase().includes(searchTerm.toLowerCase())
+
+  const filteredJobs = jobs.filter((job) =>
+    (job.cabin + job.serviceName + job.notes).toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
+
   const displayJobs = limit ? filteredJobs.slice(0, limit) : filteredJobs;
-
-  // TODO: Add editing logic later
-  // For now, just stub handlers
-  const handleEdit = (jobId: string) => {
-    alert(`Editing job ${jobId} (feature coming soon)`);
-  };
-
-  const handleDelete = (jobId: string) => {
-    if (window.confirm("Delete this job? This cannot be undone.")) {
-      // import deleteJob from data
-      import("@/lib/data").then(({ deleteJob }) => {
-        deleteJob(jobId);
-        window.location.reload();
-      });
-    }
-  };
 
   return (
     <Card>
@@ -67,10 +49,12 @@ const JobList = ({
           <CardTitle>{title}</CardTitle>
           {description && <CardDescription>{description}</CardDescription>}
         </div>
-        
+
         {showSearch && (
           <div className="mt-2 md:mt-0 md:w-72">
-            <Label htmlFor="search" className="sr-only">Search Jobs</Label>
+            <Label htmlFor="search" className="sr-only">
+              Search Jobs
+            </Label>
             <Input
               id="search"
               placeholder="Search jobs..."
@@ -90,45 +74,43 @@ const JobList = ({
               <TableHeader>
                 <TableRow>
                   <TableHead>Date</TableHead>
-                  <TableHead>Time</TableHead>
-                  <TableHead>Cabin</TableHead>
-                  <TableHead>Beds</TableHead>
-                  <TableHead>Notes</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Details</TableHead>
                   <TableHead className="text-right">Total</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {displayJobs.map((job) => (
-                  <TableRow key={job.id}>
-                    <TableCell>{format(job.date, "MMM dd, yyyy")}</TableCell>
-                    <TableCell>{format(job.date, "h:mm a")}</TableCell>
-                    <TableCell>{job.cabin}</TableCell>
-                    <TableCell>{job.bedCount}</TableCell>
-                    <TableCell className="max-w-xs truncate">
-                      {job.notes}
-                    </TableCell>
-                    <TableCell className="text-right font-medium">
-                      ${job.total.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <button
-                        className="text-blue-600 hover:underline mr-2"
-                        onClick={() => handleEdit(job.id)}
-                        title="Edit"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="text-red-600 hover:underline"
-                        onClick={() => handleDelete(job.id)}
-                        title="Delete"
-                      >
-                        Delete
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {displayJobs.map((job) => {
+                  const isCabin = !!job.cabin;
+
+                  return (
+                    <TableRow key={job.id}>
+                      <TableCell>{format(new Date(job.date), "MMM dd, yyyy")}</TableCell>
+                      <TableCell>
+                        {isCabin ? "Cabin" : "Service"}
+                      </TableCell>
+                      <TableCell className="whitespace-pre-line">
+                        {isCabin ? (
+                          <>
+                            <div><strong>Cabin:</strong> {job.cabin}</div>
+                            <div><strong>Beds:</strong> {job.bedCount}</div>
+                          </>
+                        ) : (
+                          <>
+                            <div><strong>Service:</strong> {job.serviceName}</div>
+                            <div><strong>Time:</strong> {job.startTime}–{job.endTime}</div>
+                            <div><strong>Hours:</strong> {job.hoursWorked}</div>
+                            <div><strong>Rate:</strong> ${job.hourlyRate}</div>
+                          </>
+                        )}
+                        {job.notes && <div className="text-xs text-muted-foreground mt-1">📝 {job.notes}</div>}
+                      </TableCell>
+                      <TableCell className="text-right font-medium">
+                        ${job.total.toFixed(2)}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </div>
@@ -139,4 +121,3 @@ const JobList = ({
 };
 
 export default JobList;
-

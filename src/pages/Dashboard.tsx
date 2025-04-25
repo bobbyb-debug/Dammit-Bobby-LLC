@@ -19,6 +19,12 @@ const Dashboard = () => {
   
   const upcomingJobs = recentJobs.filter(job => job.date >= today);
 
+  <img 
+  src="/logostart.jpg" 
+  alt="Dammit Bobby LLC" 
+  className="h-32 w-auto mx-auto mb-6"
+/>
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between">

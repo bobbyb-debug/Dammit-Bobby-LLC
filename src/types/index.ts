@@ -1,19 +1,26 @@
+export type JobType = "cleaning" | "lawncare" | "handyman" | "custom";
 
 export interface Job {
   id: string;
+  jobType: JobType;
   date: Date;
-  cabin: string;
-  bedCount: number;
-  notes: string;
-  total: number;
   createdAt: Date;
-}
+  clientName?: string;
+  address?: string;
 
-export interface CabinRate {
-  id: string;
-  name: string;
-  baseRate: number;
-  bedRate: number;
+  // Cabin-style cleaning only
+  cabin?: string;
+  bedCount?: number;
+
+  // For custom jobs
+  serviceName?: string;
+  startTime?: string;
+  endTime?: string;
+  hourlyRate?: number;
+  hoursWorked?: number;
+
+  notes?: string;
+  total: number;
 }
 
 export interface Invoice {
@@ -31,12 +38,9 @@ export interface Invoice {
   total: number;
 }
 
-export interface CompanyInfo {
+export interface CabinRate {
+  id: string;
   name: string;
-  address: string;
-  city: string;
-  state: string;
-  zip: string;
-  email: string;
-  phone: string;
+  baseRate: number;
+  bedRate: number;
 }

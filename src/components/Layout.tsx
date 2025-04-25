@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
@@ -13,12 +12,22 @@ import {
   Moon 
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
-  
+  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    if (!isMobile) {
+      setSidebarOpen(true);
+    } else {
+      setSidebarOpen(false);
+    }
+  }, [isMobile]);
+
   const isActive = (path: string) => location.pathname === path;
 
   const navItems = [
@@ -31,15 +40,17 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Mobile menu button */}
-      <Button
-        variant="outline"
-        size="icon"
-        className="fixed top-4 left-4 z-50 md:hidden"
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-      >
-        {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
-      </Button>
-      
+      {isMobile && (
+        <Button
+          variant="outline"
+          size="icon"
+          className="fixed top-4 left-4 z-50 md:hidden"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+        >
+          {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+        </Button>
+      )}
+
       {/* Sidebar */}
       <div 
         className={`fixed inset-y-0 left-0 transform ${
@@ -48,9 +59,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         w-64 bg-sidebar text-sidebar-foreground flex flex-col`}
       >
         <div className="p-4 flex items-center justify-center border-b border-sidebar-border">
-          <img src="/logo.svg" alt="Dammit Bobby LLC" className="h-24 w-auto" />
+          <img
+            src="/logostart.jpg"
+            alt="Dammit Bobby LLC Logo"
+            className="h-24 w-auto"
+          />
         </div>
-        
+
         <nav className="flex-1 pt-6">
           <ul className="space-y-1 px-2">
             {navItems.map((item) => (
@@ -72,7 +87,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             ))}
           </ul>
         </nav>
-        
+
         <div className="p-4 border-t border-sidebar-border flex justify-between items-center">
           <Button 
             variant="ghost" 
@@ -82,9 +97,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           >
             {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
           </Button>
-          
+
           <div className="text-sm opacity-75">
-            &copy; {new Date().getFullYear()} 
+            &copy; {new Date().getFullYear()} Dammit Bobby LLC
           </div>
         </div>
       </div>
